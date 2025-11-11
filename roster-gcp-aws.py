@@ -1,3 +1,10 @@
+# 11/10/2025
+# John Caceres, Mark Pfister
+# 
+# A Python script to implement the database schema, parse the input files,
+# and upload the data for Milestone 2.
+#
+
 #import pymysql,json,os
 import pymysql
 import json
@@ -5,7 +12,7 @@ import os
 
 
 # Set this to "GCP" or "AWS" (or use an env var: DB_PLATFORM=GCP/AWS)
-PLATFORM = os.getenv("DB_PLATFORM", "AWS").upper()
+PLATFORM = os.getenv("DB_PLATFORM", "GCP").upper()
 
 def getconn():
     if PLATFORM == "GCP":
@@ -14,14 +21,14 @@ def getconn():
         from google.cloud.sql.connector import Connector
 
         # NOTE: use a raw string for Windows paths to avoid backslash escapes
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\path\to\your-key.json"
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"key.json"
 
         connector = Connector()
         return connector.connect(
-            "project:region:instance",   # e.g. "csc-ser325:us-central1:db325-instance"
+            "CSC-SER325:us-central1:db325-instance",   # e.g. "csc-ser325:us-central1:db325-instance"
             "pymysql",
             user="root",
-            password="your-password",
+            password="p22a@M~^sFn%4DQs",
             db=None               # or None if you prefer to CREATE first, then USE
         )
     else:
@@ -37,12 +44,13 @@ def getconn():
     
 def setup_db(cur):
   # Set up db
-    cur.execute('CREATE DATABASE IF NOT EXISTS roster_db')
-    cur.execute('USE roster_db')
+    cur.execute('CREATE DATABASE IF NOT EXISTS hospital_db')
+    cur.execute('USE hospital_db')
 
-    cur.execute('DROP TABLE IF EXISTS Member;')
-    cur.execute('DROP TABLE IF EXISTS Course;')    
-    cur.execute('DROP TABLE IF EXISTS User;')
+    cur.execute('DROP TABLE IF EXISTS staff;')
+    cur.execute('DROP TABLE IF EXISTS patient;')    
+    cur.execute('DROP TABLE IF EXISTS services;')    
+    cur.execute('DROP TABLE IF EXISTS staff_schedule;')
 
 
     
@@ -50,12 +58,12 @@ def setup_db(cur):
         CREATE TABLE User (
         id     INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
             name   VARCHAR(20) UNIQUE);
-        ''');
+        ''')
 
     cur.execute('''CREATE TABLE Course (
             id     INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
             title  VARCHAR(20) UNIQUE);
-        ''');
+        ''')
 
     cur.execute('''CREATE TABLE Member (
             user_id     INT,
