@@ -26,7 +26,7 @@ def getconn():
 
         connector = Connector()
         return connector.connect(
-            "csc-ser325:us-central1:db325-instance",   # e.g. "csc-ser325:us-central1:db325-instance"
+            "csc-ser325-470207:us-central1:db325-instance",   # e.g. "csc-ser325:us-central1:db325-instance"
             "pymysql",
             user="root",
             password="p22a@M~^sFn%4DQs",
@@ -48,21 +48,23 @@ def setup_db(cur):
     cur.execute('CREATE DATABASE IF NOT EXISTS hospital_db')
     cur.execute('USE hospital_db')
 
-    # Set up tables
-    cur.execute('DROP TABLE IF EXISTS staff;')
-    cur.execute('DROP TABLE IF EXISTS patient;')    
+    # Set up tables    
     cur.execute('DROP TABLE IF EXISTS services_weekly;')    
     cur.execute('DROP TABLE IF EXISTS staff_schedule;')
+    cur.execute('DROP TABLE IF EXISTS staff;')
+    cur.execute('DROP TABLE IF EXISTS patient;')
     
-    # Create staff table with primary key staff_id.
+    # Create staff table with primary key staff_name.
     # Each entry represents a unique staff member.
+    # staff_name is used as the primary key because staff_ids are not kept
+    #   consistent in the original dataset for some reason.
     cur.execute('''
         CREATE TABLE staff (
             staff_id CHAR(12) NOT NULL,
             staff_name VARCHAR(50) NOT NULL,
             role VARCHAR(50) NOT NULL,
             service VARCHAR(50) NOT NULL,
-            PRIMARY KEY (staff_id)
+            PRIMARY KEY (staff_name)
         );
         ''')
 
@@ -97,14 +99,14 @@ def setup_db(cur):
         );
         ''')
     
-    # Create staff_schedule table with primary key (week, staff_id).
+    # Create staff_schedule table with primary key (week, staff_name).
     cur.execute('''
         CREATE TABLE staff_schedule (
             week TINYINT(2) UNSIGNED NOT NULL,
-            staff_id CHAR(12) NOT NULL,
-            present BIT(1) NOT NULL,
-            PRIMARY KEY (week, staff_id),
-            FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+            staff_name VARCHAR(50) NOT NULL,
+            present TINYINT(1) UNSIGNED NOT NULL,
+            PRIMARY KEY (week, staff_name),
+            FOREIGN KEY (staff_name) REFERENCES staff(staff_name)
         );
         ''')
 
@@ -136,11 +138,11 @@ def insert_data(cur):
                 (row.week, row.month, row.service, row.available_beds, row.patients_request,
                  row.patients_admitted, row.patients_refused, row.patient_satisfaction, row.staff_morale, row.event) )
 
-    # Insert staff_schedule data into database
+    # Insert staff_schedule data into database.
     for row in staffScheduleData.itertuples():
         cur.execute('''INSERT IGNORE INTO staff_schedule
             VALUES (%s, %s, %s)''',
-                (row.week, row.staff_id, row.present) )
+                (row.week, row.staff_name, row.present) )
 
 cnx = getconn() 
 cur = cnx.cursor()
