@@ -51,7 +51,7 @@ selection = (int) (input("Which graph would you like to see?\n"))
 while (selection != -1):
     if (selection == 1):
         # 1. Bar Chart: Patient Requests vs Admissions by Service
-        plt.figure(figsize=(12, 8))
+        plt.figure(figsize=(10, 8))
         x = range(len(dfs[0].index))
         width = 0.35
 
