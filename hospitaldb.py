@@ -13,7 +13,7 @@ import pandas as pd
 
 
 # Set this to "GCP" or "AWS" (or use an env var: DB_PLATFORM=GCP/AWS)
-PLATFORM = os.getenv("DB_PLATFORM", "GCP").upper()
+PLATFORM = os.getenv("DB_PLATFORM", "AWS").upper()
 
 def getconn():
     if PLATFORM == "GCP":
@@ -36,10 +36,10 @@ def getconn():
         # ----- AWS ONLY -----
         # install: pip install PyMySQL
         return pymysql.connect(
-            host="mydb.xxxxxx.us-east-1.rds.amazonaws.com",  # RDS endpoint = host
+            host="db325-instance.cxua2a04s2fl.us-east-2.rds.amazonaws.com",  # RDS endpoint = host
             port=3306,                                       # MySQL default port
             user="admin",
-            password="your-password",
+            password="YsRxN9joFUsiqxkCVs1i",
             database=None                            # or None if you CREATE first
         )
     
