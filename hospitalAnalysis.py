@@ -49,7 +49,6 @@ conn.close()
 selection = (int) (input("Which graph would you like to see?\n"))
 
 while (selection != -1):
-    print(selection)
     if (selection == 1):
         # 1. Bar Chart: Patient Requests vs Admissions by Service
         plt.figure(figsize=(12, 8))
