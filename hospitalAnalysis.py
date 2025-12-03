@@ -61,7 +61,7 @@ while (selection != -1):
         plt.xlabel('Service')
         plt.ylabel('Number of Patients')
         plt.title('Patient Requests vs Admissions by Service')
-        plt.xticks([i + width/2 for i in x], dfs[0].index, rotation=45)
+        plt.xticks([i + width/2 for i in x], dfs[0]['service'], rotation=45)
         plt.legend()
         plt.tight_layout()
         plt.show()
