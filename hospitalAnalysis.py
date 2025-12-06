@@ -10,7 +10,6 @@ import pymysql
 # We switched to using pyplot instead of express, out of familiarity.
 import matplotlib.pyplot as plt
 import warnings
-from datetime import datetime
 
 # A warning pops up when using pd.read_sql()
 warnings.filterwarnings('ignore')
@@ -46,7 +45,7 @@ conn.close()
 # Plotly Express Charts
 # -----------------------------
 
-selection = (int) (input("Which graph would you like to see?\n"))
+selection = (int) (input("Which graph would you like to see? (1-5)\n"))
 
 while (selection != -1):
     if (selection == 1):
@@ -68,6 +67,7 @@ while (selection != -1):
 
         selection = (int) (input("Which graph would you like to see?\n"))
     elif (selection == 2):
+        # 2. Average Satisfaction by Service
         avg_satisfaction_by_service = dfs[1].groupby('service')['satisfaction'].mean()
         best_service = avg_satisfaction_by_service.idxmax()
         best_value = avg_satisfaction_by_service.max()
@@ -94,6 +94,7 @@ while (selection != -1):
         selection = (int) (input("Which graph would you like to see?\n"))
 
     elif(selection == 3):
+        # 3. Staff distribution by role
         role_distribution = dfs[2]['role'].value_counts()
 
         plt.figure(figsize=(10,8))
@@ -111,6 +112,7 @@ while (selection != -1):
         selection = (int) (input("Which graph would you like to see?\n"))
     
     elif(selection == 4):
+        # 4. Monthly Patient Demand Trend
         month_distribution = dfs[3].groupby('month')['patients_request'].sum()
 
         plt.figure(figsize=(10,8))
@@ -124,6 +126,7 @@ while (selection != -1):
         selection = (int) (input("Which graph would you like to see?\n"))
     
     elif(selection == 5):
+        # 5. Distribution of Staff Attendance Rates
         staff_attendance = dfs[4].groupby('staff_name')['present'].mean() * 100
 
         plt.figure(figsize=(10,8))
@@ -138,6 +141,6 @@ while (selection != -1):
         
         selection = (int) (input("Which graph would you like to see?\n"))
     else:
-        selection = (int) (input("Invalid graph number. Which graph would you like to see?\n(Enter -1 to quit.)\n"))
+        selection = (int) (input("Invalid graph number (1-5). Which graph would you like to see?\n(Enter -1 to quit.)\n"))
 
 print("Goodbye.")
